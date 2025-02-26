@@ -1,0 +1,154 @@
+<div *ngIf="!isAdmin()">
+    <h2>
+        401: Unauthorized!!!
+    </h2>
+</div>
+
+
+<div *ngIf="isAdmin()">
+    <h2 *ngIf="inventory.length===0">
+        No books Available right now.
+    </h2>
+    <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="inventory.length>0">
+        <thead>
+            <tr>
+                <th>Book Title</th>
+                <th>Author</th>
+                <th>Genre</th>
+                <th>Price</th>
+                <th>Published Date</th>
+                <th>Quantity</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor='let book of inventory; let i=index'>
+                <td>{{ book.title }}</td>
+                <td>{{ book.author }}</td>
+                <td>{{ book.genre }}</td>
+                <td>{{ book.price }}</td>
+                <td>{{ book.date }}</td>
+                <td>{{book.quantity}}</td>
+                <td>
+                    <button type="button" *ngIf="book.price" (click)="handleViewBookClick(inventory[i].id,i)"
+                        class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#buyBookModal">
+                        View
+                    </button>&nbsp;
+
+                    <button class="btn btn-info" (click)="handleViewBookClick(inventory[i].id,i)" data-bs-toggle="modal" data-bs-target="#editBookModal">Edit</button>&nbsp;
+                    <button class="btn btn-danger" (click)="handleDelete(i)">Delete</button>&nbsp;
+
+                    <div *ngIf="book.quantity<=0">
+                        <i class="unavailable">This book is currently unavailable.</i>
+                    </div>
+
+                    <!-- View Modal -->
+                    <div class="modal fade" id="buyBookModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                        aria-hidden="true" *ngIf="bookIdx>=0">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Buy Now
+                                        {{inventory[bookIdx].title}}
+                                    </h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="card">
+                                        <div class="text-center">
+                                            <h5>Buy <i>{{inventory[bookIdx].title}}</i>.</h5>
+                                            <hr>
+                                            <table class="resultTable">
+                                                <tr>
+                                                    <td><b>Book Title:</b></td>
+                                                    <td>{{inventory[bookIdx].title}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><b>Price:</b></td>
+                                                    <td>₹{{inventory[bookIdx].price}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><b>Author:</b></td>
+                                                    <td>{{inventory[bookIdx].author}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><b>Genre:</b></td>
+                                                    <td>{{inventory[bookIdx].genre}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><b>Published Date:</b></td>
+                                                    <td> {{inventory[bookIdx].date}}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <br>
+                                    </div>
+                                    <br>
+                                    <button class="btn btn-primary" data-bs-dismiss="modal"
+                                        (click)="handleDetailedView()">Detailed View</button>&nbsp;
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+                                        aria-label="Close">
+                                        Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                     <!-- Edit Modal -->
+                     <div class="modal fade" id="editBookModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                     aria-hidden="true" *ngIf="bookIdx>=0">
+                     <div class="modal-dialog">
+                         <div class="modal-content">
+                             <div class="modal-header">
+                                 <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Book
+                                     {{inventory[bookIdx].title}}
+                                 </h1>
+                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                     aria-label="Close"></button>
+                             </div>
+                             <div class="modal-body">
+                                <form #form="ngForm" (ngSubmit)="handleEditBook()">
+                                    <div class="mb-3">
+                                        <label for="title" class="form-label">Book Title</label>
+                                        <input type="text" class="form-control" id="title" name="title" placeholder="Title" [(ngModel)]="inventory[bookIdx].title">
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="row">
+                                            <div class="col">
+                                                <label for="title" class="form-label">Author</label>
+                                                <input type="text" class="form-control"  id="author" name="author"  placeholder="Author" [(ngModel)]="inventory[bookIdx].author">
+                                            </div>
+                                            <div class="col">
+                                                <label for="title" class="form-label">Genre</label>
+                                                <input type="text" class="form-control"  id="genre" name="genre"  placeholder="Genre" [(ngModel)]="inventory[bookIdx].genre">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="row">
+                                            <div class="col">
+                                                <label for="title" class="form-label">Date Published</label>
+                                                <input type="date"  id="date" name="date"  class="form-control" [(ngModel)]="inventory[bookIdx].date">
+                                            </div>
+                                            <div class="col">
+                                                <label for="title" class="form-label">Price</label>
+                                                <input type="number" class="form-control"  id="price" name="price"  placeholder="Price" [(ngModel)]="inventory[bookIdx].price">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="title" class="form-label">Quantity</label>
+                                        <input type="number" class="form-control" id="quantity" name="quantity" placeholder="Quantity" [(ngModel)]="inventory[bookIdx].quantity">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Edit book</button>
+                                </form>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

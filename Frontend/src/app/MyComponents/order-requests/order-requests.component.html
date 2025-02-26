@@ -1,0 +1,30 @@
+<div *ngIf="!isAdmin()">
+    <h2>
+        401: Unauthorized!!!
+    </h2>
+</div>
+<div *ngIf="isAdmin()">
+    <h2 *ngIf="orders.length===0">
+        No orders Available right now.
+    </h2>
+    <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="orders.length>0">
+        <thead>
+            <tr>
+                <th>Book Title</th>
+                <th>Order Date</th>
+                <th>Order Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor='let book of orders; let i=index'>
+                <td>{{ book.booktitle }}</td>
+                <td>{{ book.orderdate }}</td>
+                <td>{{ book.orderstatus }}</td>
+                <td>
+                    <button class="btn btn-info" (click)="handleUpdate(i)" [disabled]="book.orderstatus==='Delivered'">Update</button>&nbsp;
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

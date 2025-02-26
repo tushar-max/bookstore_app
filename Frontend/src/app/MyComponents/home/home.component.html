@@ -1,0 +1,101 @@
+<div class="row justify-content-center">
+    <div class="col-auto">
+        <input type="text" class="form-control" style="width: 200px;" name="query" placeholder="Search"
+            [(ngModel)]="query">
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-primary" (click)="handleSearch()">Search</button>
+        &nbsp;
+        <button class="btn btn-danger" (click)="handleReset()">Reset</button>
+    </div>
+</div>
+
+<br>
+
+
+<h2 *ngIf="books.length===0">
+    No books Available right now.
+</h2>
+
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="books.length>0">
+    <thead>
+        <tr>
+            <th>Book Title</th>
+            <th>Author</th>
+            <th>Genre</th>
+            <th>Price</th>
+            <th>Published Date</th>
+            <th>Available</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor='let book of books; let i=index'>
+            <td>{{ book.title }}</td>
+            <td>{{ book.author }}</td>
+            <td>{{ book.genre }}</td>
+            <td>{{ book.price }}</td>
+            <td>{{ book.date }}</td>
+            <td>{{book.quantity>0?"Yes":"No"}}</td>
+            <td>
+                <button type="button" (click)="handleBuyBookClick(books[i].id,i)" *ngIf="book.price"
+                    class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#buyBookModal">
+                    View
+                </button>
+
+                <div *ngIf="book.quantity<=0">
+                    <i class="unavailable">This book is currently unavailable.</i>
+                </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="buyBookModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true" *ngIf="bookIdx>=0">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Buy Now {{books[bookIdx].title}}</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card">
+                                    <div class="text-center">
+                                        <h5>Buy <i>{{books[bookIdx].title}}</i>.</h5>
+                                        <hr>
+                                        <table class="resultTable">
+                                            <tr>
+                                                <td><b>Book Title:</b></td>
+                                                <td>{{books[bookIdx].title}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Price:</b></td>
+                                                <td>₹{{books[bookIdx].price}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Author:</b></td>
+                                                <td>{{books[bookIdx].author}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Genre:</b></td>
+                                                <td>{{books[bookIdx].genre}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Published Date:</b></td>
+                                                <td> {{books[bookIdx].date}}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <br>
+                                </div>
+                                <br>
+                                <button class="btn btn-primary"  data-bs-dismiss="modal" (click)="handleDetailedView()">Detailed View</button>&nbsp;
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+                                    aria-label="Close"> Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>

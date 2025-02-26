@@ -1,0 +1,131 @@
+<nav class="navbar navfix bg-dark navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" [routerLink]="['/']">BookStore Application</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" [routerLink]="['/']" aria-current="page">Home</a>
+            </li>
+            <li class="nav-item" *ngIf="isLoggedIn() && !isAdmin()">
+              <a class="nav-link active" [routerLink]="['/orders']" aria-current="page">My Orders</a>
+            </li>
+            <li class="nav-item" *ngIf="isLoggedIn() && !isAdmin()">
+              <a class="nav-link active" [routerLink]="['/cart']" aria-current="page">My Cart</a>
+            </li>
+            <li class="nav-item" *ngIf="isAdmin()">
+              <a class="nav-link active" [routerLink]="['/inventory']" aria-current="page">My Inventory</a>
+            </li>
+            <li class="nav-item" *ngIf="isAdmin()">
+              <a class="nav-link active" [routerLink]="['/add']" aria-current="page">Add new Book</a>
+            </li>
+            <li class="nav-item" *ngIf="isAdmin()">
+              <a class="nav-link active" [routerLink]="['/orderRequests']" aria-current="page">My Order Requests</a>
+            </li>
+          </ul>
+      <div class="d-flex">
+        <button *ngIf="!isLoggedIn()" class="btn btn-warning"  data-bs-toggle="modal"
+        data-bs-target="#signupModal">Signup</button>&nbsp;&nbsp;
+        <button *ngIf="!isLoggedIn()" type="button" class="btn btn-success" data-bs-toggle="modal"
+          data-bs-target="#exampleModal">
+          Login
+        </button>
+        <button *ngIf="isLoggedIn()" (click)=" handleLogout()" class="btn btn-danger">Logout</button>
+      </div>
+      </div>
+    </div>
+  </nav>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Login Page</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">User Login</p>
+  
+          <form #form="ngForm" (ngSubmit)="loginUser()">
+            <div class="mb-3">
+              <label for="email" class="form-label">Email address</label>
+              <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp"
+                [(ngModel)]="loginUserRequest.email">
+              <div *ngIf="!validEmail()" id="emailHelp" class="form-text" style="color: red">Please enter valid email
+                address.</div>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="password" name="password"
+                [(ngModel)]="loginUserRequest.password">
+            </div>
+            <div class="mb-3">
+              <label for="role" class="form-label">Role: </label>&nbsp;&nbsp;
+              <input type="radio" name="options" value="customer" [(ngModel)]="loginUserRequest.role"> Customer
+              <input type="radio"  name="options" value="storeowner" [(ngModel)]="loginUserRequest.role"> Store Owner
+              
+            </div>
+            <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
+          
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary" >Login</button>
+        </div>
+      </form>
+    </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Signup modal -->
+  <div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Signup Page</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">User Registration</p>
+  
+          <form #form="ngForm" (ngSubmit)="signupUser()">
+            <div class="mb-3">
+              <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" class="form-control" id="name" name="name" placeholder="Name"
+                  [(ngModel)]="signupUserRequest.name">
+              </div>
+              <label for="email" class="form-label">Email address</label>
+              <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp"
+                [(ngModel)]="signupUserRequest.email" placeholder="Email Address">
+              <div *ngIf="!validSignupEmail()" id="emailHelp" class="form-text" style="color: red">Please enter valid email
+                address.</div>
+            </div>
+            <div class="mb-3">
+              <label for="phone" class="form-label">Phone</label>
+              <input type="number" class="form-control" id="phone" name="phone"
+                [(ngModel)]="signupUserRequest.phone">
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="password" name="password"
+                [(ngModel)]="signupUserRequest.password">
+            </div>
+            <div class="mb-3">
+              <label for="role" class="form-label">Role: </label>&nbsp;&nbsp;
+              <input type="radio" name="options" value="customer" [(ngModel)]="signupUserRequest.role"> Customer
+              <input type="radio"  name="options" value="storeowner" [(ngModel)]="signupUserRequest.role"> Store Owner
+              
+            </div>          
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Register</button>
+        </div>
+      </form>
+    </div>
+      </div>
+    </div>
+  </div>

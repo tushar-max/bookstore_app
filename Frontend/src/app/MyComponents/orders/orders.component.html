@@ -1,0 +1,60 @@
+<div *ngIf="!(isLoggedIn()&&(!isAdmin()))">
+    <h2>Please Login as user to continue.</h2>
+</div>
+
+<div *ngIf="isLoggedIn()&&(!isAdmin())" class="px-0 border rounded-2 shadow-1">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Orders</h5>
+            <br>
+            <h2 *ngIf="orders.length==0">No orders placed.</h2>
+            
+            <div *ngFor="let order of orders;let i=index" class="d-flex mb-3">
+                <a class="me-3">
+                    <img src="https://img.freepik.com/premium-photo/opened-book-with-flying-pages-butterflies-dark-backgroundgenerative-ai_391052-12859.jpg"
+                        style="min-width: 96px; height: 96px;" class="img-md img-thumbnail" />
+                </a>
+                <div class="info">
+                    <a class="nav-link mb-1">
+                        {{order.booktitle}} <br />
+                        ordered on {{order.orderdate}}
+                    </a>
+                    <strong class="text-dark"> Order status: {{order.orderstatus}}</strong>&nbsp;
+                    <button class="btn btn-sm btn-primary" (click)="handleSetIdx(i)" data-bs-toggle="modal" data-bs-target="#reviewModal">Write a review</button>
+                </div>
+            </div>
+    </div>
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Write a review</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form #form="ngForm" (ngSubmit)="handleSubmitReview()">
+        <div class="modal-body">
+                <div class="mb-3">
+                  <label for="rating" class="form-label">Rating:  {{tempReview.rating}} stars</label>&nbsp;
+                  <input type="range" min="1" max="5" id="rating" name="rating" [(ngModel)]="tempReview.rating">
+                </div>
+                <div class="mb-3">
+                  <label for="review" class="form-label">Review: </label>
+                  <textarea class="form-control" id="review" name="review"
+                  [(ngModel)]="tempReview.review"
+                    ></textarea>
+                </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Submit Review</button>
+            </div>
+          
+        </div>
+    </form>
+      </div>
+    </div>
+  </div>

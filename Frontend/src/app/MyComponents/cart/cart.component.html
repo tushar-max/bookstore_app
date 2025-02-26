@@ -1,0 +1,27 @@
+<div *ngIf="cartItems.length==0&&isLoggedIn()">
+<h2>Your Cart is empty.</h2>
+</div>
+
+
+<div *ngIf="isLoggedIn()&&(!isAdmin())&&(cartItems.length!=0)" class="px-0 border rounded-2 shadow-1">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Cart Items</h5>
+            <br>
+            <h2 *ngIf="cartItems.length==0">No orders placed.</h2>
+            
+            <div *ngFor="let cart of cartItems;let i=index" class="d-flex mb-3">
+                <a class="me-3" (click)="handleViewBook(i)" >
+                    <img src="https://img.freepik.com/premium-photo/opened-book-with-flying-pages-butterflies-dark-backgroundgenerative-ai_391052-12859.jpg"
+                        style="min-width: 96px; height: 96px;" class="img-md img-thumbnail" />
+                </a>
+                <div class="info">
+                    <a class="nav-link mb-1">
+                        {{cart.booktitle}} <br />
+                    </a>
+                    <button class="btn btn-primary btn-sm" (click)="handleBuy(i)">Buy Now</button> &nbsp;
+                    <button class="btn btn-danger btn-sm" (click)="removeFromCart(i)">Remove from Cart</button>
+                </div>
+            </div>
+    </div>
+</div>
